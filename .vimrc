@@ -5,12 +5,11 @@ let g:mapleader="\\"
 
 syntax enable "Color code.
 set backspace=indent,eol,start
-set laststatus=2
-set showcmd "Show number of selected lines in visual mode.
+set laststatus=1
+set showcmd "Show number of seleced lines in visual mode.
 set showmatch "Show pair of parenthesis/square brackets/braces.
 set sw=4 "Establish number of spaces to indent.
 set tabstop=4 "Establish tab length (4 spaces).
-set expandtab "Replace tabs by spaces.
 set noexpandtab "Set spaces as a set of tabs.
 :%retab! "Retabulate the whole file.
 set relativenumber "Enumerate lines according to cursor position.
@@ -22,12 +21,21 @@ set encoding=utf-8
 set updatetime=100
 "Modify pop up window background color to white.
 "highlight Pmenu ctermbg=white guibg=white.
-
-"For searching
-"--------------------------------------------------------------------
 set incsearch "Highlight match on cursor when searching.
 set hlsearch "Highlight all matches when searching.
-" Press <leader>hl to toggle highlighting on/off, and show current value.
+set laststatus=2                             " always show statusbar
+set statusline=
+set statusline+=%-10.3n\                     " buffer number
+set statusline+=%f\                          " filename
+set statusline+=%h%m%r%w                     " status flags
+set statusline+=\[%{strlen(&ft)?&ft:'none'}] " file type
+set statusline+=%=                           " right align remainder
+set statusline+=0x%-8B                       " character value
+set statusline+=%-14(%l,%c%V%)               " line, character
+set statusline+=%<%P                         " file position
+"Press \\* to count the number of occurrences given the selected pattern.
+map <leader>* *<C-O>:%s///gn<CR>
+"Press <leader>hl to toggle highlighting on/off, and show current value.
 :noremap <leader>hl :set hlsearch! hlsearch?<CR>
 function GetVisualSelection()
   let raw_search = @"
@@ -36,7 +44,6 @@ endfunction
 xnoremap // ""y:call GetVisualSelection()<bar>:set hls<cr>
 xnoremap /s ""y:call GetVisualSelection()<cr><bar>:%s//
 "--------------------------------------------------------------------
-
 "Plugins installed.
 
 "File where plugins are saved.
@@ -51,7 +58,7 @@ call plug#begin('~/.vim/plugged')
 	"You can use . command for plugin maps.
 	Plug 'tpope/vim-repeat'
 	"You can comment multiple lines easily.
-	Plug 'preservim/nerdcommenter'
+	Plug 'tomtom/tcomment_vim'
 	"Surround expressions with "",'',(),[],{}.
 	Plug 'jiangmiao/auto-pairs'
 	""Use Git commands in Vim.
@@ -64,28 +71,28 @@ call plug#begin('~/.vim/plugged')
 	Plug 'vim-syntastic/syntastic'
 	Plug 'syngan/vim-vimlint' "For vim
 	Plug 'vim-jp/vim-vimlparser' "For vim
+	"CP2K
+	Plug 'cp2k/vim-cp2k'
+	" LAMMPS
+	Plug 'tommason14/lammps.vim'
 call plug#end()
 "--------------------------------------------------------------------
 "Configuring NerdTree
 
-"To open the file explorer, write the command :NERDTree or \+t
+"To open the file explorer, write the command :NERDTree or \ + t
 nnoremap <leader>t :NERDTree<CR>
-" Exit Vim if NERDTree is the only window remaining in the single tab.
+" Exit Vim if NERDTree is the only window remaining in the only tab.
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
-"Instructions:
-"To open a given file into a split window, move your coursor to the
-"file and type i instead of <CR>.
 "--------------------------------------------------------------------
 "Configuring syntastic
 
 let g:syntastic_sh_checkers = ['sh']
-let g:syntastic_sh_bashate_quiet_messages = {"regex":"[(indent.*)(long)]"}
 let g:syntastic_cpp_checkers = ['gcc']
 let g:syntastic_fortran_checkers = ['gfortran']
 let g:syntastic_vim_checkers = ['vimlint']
 let g:syntastic_python_checkers = ['pyflakes']
 "Enable window of errors. You can open it with the command :lopen
-"or \+w
+"or \ + e
 nnoremap <leader>e :lopen<CR>
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_check_on_wq = 0
@@ -120,6 +127,8 @@ let g:gitgutter_sign_removed = '-'
 let g:gitgutter_sign_removed_first_line = '^-'
 let g:gitgutter_sign_removed_above_and_below = '--'
 let g:gitgutter_sign_modified_removed = '>-'
+"Open a window to show the list of changes.
+nmap <Leader>hw :GitGutterQuickFix
 "Activate Git-Gutter.
 nmap <Leader>gd :GitGutterDisable<CR>
 "Deactivate Git-Gutter.
@@ -135,18 +144,23 @@ let g:gitgutter_preview_win_floating = 1
 "1. Move cursor to modified line
 "2. Press <Leader>hp
 "To undo line changes:
-"1. Press <Leader>hu
+" 1. Press <Leader>hu
 "To move to the preview window:
 "1. Press :wincmd P
 "--------------------------------------------------------------------
-"Configuring nerdcommenter.
+"Configuring Tcomment.
 
 "Add space after commenting.
-let g:NERDSpaceDelims = 0
+let g:tcomment_types={'lammps': '# %s'}
+let g:tcomment_types={'cp2k': '! %s'}
 "Instructions:
-"[count]<Leader>cc: Comments the line.
-"[count]<Leader>cu: Uncomment all the line.
-"[count]<Leader>ci: Toggles the comment (Only first one)
+"gcc: Comments the line.
+"gc<Count>c{motion}: Toggles comment with count argument.
+"gc<Count>c{motion}: Uncomment all the line.
+"gc{motion}: Toggles the comment (Only first one)
+"In visual mode:
+"gc: Toggles comment.
+"g> Comment selected text.
 "--------------------------------------------------------------------
 "Configuring auto-pairs.
 
