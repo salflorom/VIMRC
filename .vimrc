@@ -8,9 +8,9 @@ set backspace=indent,eol,start
 set laststatus=1
 set showcmd "Show number of seleced lines in visual mode.
 set showmatch "Show pair of parenthesis/square brackets/braces.
-set sw=4 "Establish number of spaces to indent.
-set tabstop=4 "Establish tab length (4 spaces).
-set noexpandtab "Set spaces as a set of tabs.
+set sw=4 smarttab "Establish number of spaces to indent.
+set tabstop=8 softtabstop=0 "Establish tab length (4 spaces).
+set expandtab "Set spaces as a set of tabs.
 :%retab! "Retabulate the whole file.
 set relativenumber "Enumerate lines according to cursor position.
 set foldenable "Folds code lines.
@@ -61,12 +61,12 @@ call plug#begin('~/.vim/plugged')
 	Plug 'tomtom/tcomment_vim'
 	"Surround expressions with "",'',(),[],{}.
 	Plug 'jiangmiao/auto-pairs'
-	""Use Git commands in Vim.
-	"Plug 'tpope/vim-fugitive'
 	"Tabularize lines around a character.
 	Plug 'godlygeek/tabular'
 	"Markdown plugin.
 	Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
+	"Markdown viewer plugin.
+	Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
 	"Look for syntax errors.
 	Plug 'vim-syntastic/syntastic'
 	Plug 'syngan/vim-vimlint' "For vim
@@ -75,12 +75,17 @@ call plug#begin('~/.vim/plugged')
 	Plug 'cp2k/vim-cp2k'
 	" LAMMPS
 	Plug 'tommason14/lammps.vim'
+	" Read csv files
+	Plug 'mechatroner/rainbow_csv'
 call plug#end()
+"--------------------------------------------------------------------
+"Installation of vim-instant-markdown
+"Look at their webpage: https://github.com/instant-markdown/vim-instant-markdown
 "--------------------------------------------------------------------
 "Configuring NerdTree
 
 "To open the file explorer, write the command :NERDTree or \ + t
-nnoremap <leader>t :NERDTree<CR>
+nnoremap <leader>t :NERDTreeToggle<CR>
 " Exit Vim if NERDTree is the only window remaining in the only tab.
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 "--------------------------------------------------------------------
